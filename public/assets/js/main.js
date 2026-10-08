@@ -9,7 +9,7 @@ document.addEventListener('livewire:navigated', () => {
         return false;
     });
 
-})
+});
 
 $(document).ready(function () {
     $(window).scroll(function () {

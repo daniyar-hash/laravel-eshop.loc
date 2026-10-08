@@ -2,13 +2,20 @@
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Helpers\Traits\CartTrait;
 
 new class extends Component
 {
+
+
+    
+ use CartTrait;   
+
+
     public function render()
     {
 
-        
+
         
         $hit_products = Product::query()
         ->orderBy('id', 'desc')
@@ -36,7 +43,7 @@ new class extends Component
 
 <div>
 
-    <div id="carousel" class="carousel slide carousel-fade">
+    <div id="carousel" class="carousel slide carousel-fade" wire:ignore>
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carousel" data-bs-slide-to="0" class="active"
                     aria-current="true" aria-label="Slide 1"></button>
