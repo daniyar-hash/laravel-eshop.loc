@@ -69,6 +69,27 @@ public static function getCartQuantityTotal(): int
     return array_sum(array_column(self::getCart(), 'quantity'));
 }
 
+public static function getTotalProducts(): int
+{
+    $total = 0;
+    $count = self::getCart();
+    foreach($count as $item){
+        $total += $item['price'] * $item['quantity'];
+    }
+
+    return $total;
+}
+
+public static function deleteProductFromCart(int $productId): bool 
+{
+    if(self::hasProductInCart($productId)){
+        session()->forget("cart.{$productId}");
+        return true;
+    }else{
+        return false;
+    }
+}
+
 
 
 

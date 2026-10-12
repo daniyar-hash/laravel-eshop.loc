@@ -19,6 +19,8 @@ trait CartTrait {
         }
        
         // $res = Cart::addCart($productId, $quantity);
+
+
             if(Cart::addCart($productId, $quantity)){
                 $this->js("toastr.success('Product added in Cart successfully!')");
                 $this->dispatch('cart-updated');
@@ -28,6 +30,16 @@ trait CartTrait {
 
             }    
                 
+    }
+
+    public function deleteFromCart(int $productId)
+    {
+        if(Cart::deleteProductFromCart($productId)){
+             $this->js("toastr.success('Product deleted from Cart successfully!')");
+             $this->dispatch('cart-updated');
+        }else{
+             $this->js("toastr.error('Oops! Something went wrong!')");
+        }
     }
      
 

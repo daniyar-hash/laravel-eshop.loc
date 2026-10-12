@@ -3,14 +3,16 @@
 use Livewire\Component;
 use App\Models\Product;
 use App\Helpers\Traits\CartTrait;
+use App\Helpers\Cart\Cart;
+
 
 new class extends Component
 {
 
 
     
- use CartTrait;   
-
+ use CartTrait;
+ 
 
     public function render()
     {
@@ -22,7 +24,6 @@ new class extends Component
         ->where('is_hit', '=', '1')
         ->limit(4)
         ->get();
-
 
 
         
