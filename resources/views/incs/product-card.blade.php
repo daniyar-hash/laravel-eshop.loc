@@ -29,19 +29,14 @@
                     <button wire:click="addCart({{$product->id}})" 
                         class="btn btn-outline-secondary add-to-cart"
                         wire:loading.attr="disabled">
-                        
                         <div wire:loading.remove wire:target="addCart({{$product->id}})">
                             <i class="fas fa-shopping-cart"></i>
                         </div>
-
                         <div wire:loading wire:target="addCart({{$product->id}})"> 
                             <div class="spinner-grow spinner-grow-sm" role="status">
                             <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        
-                    
-                    
                     </button>
                 </div>
             </div>

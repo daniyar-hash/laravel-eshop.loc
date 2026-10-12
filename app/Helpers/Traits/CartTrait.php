@@ -5,12 +5,9 @@ namespace App\Helpers\Traits;
 use App\Helpers\Cart\Cart;
 
 
-
-
-
 trait CartTrait {
 
-    public int $quantity = 1;
+    public int $quantity = 1; 
 
     public function addCart(int $productId, $quantity = false)
     {
@@ -21,11 +18,16 @@ trait CartTrait {
             $quantity = 1;
         }
        
+        // $res = Cart::addCart($productId, $quantity);
+            if(Cart::addCart($productId, $quantity)){
+                $this->js("toastr.success('Product added in Cart successfully!')");
+                $this->dispatch('cart-updated');
+            }   else{
+                
+              $this->js("toastr.error('Oops! Something went wrong!')");
 
-        $res = Cart::addCart($productId, $quantity);
-       
-        
-        
+            }    
+                
     }
      
 

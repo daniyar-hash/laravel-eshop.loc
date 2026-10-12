@@ -22,6 +22,8 @@ public static function addCart(int $productId, int $quantity = 1): bool
     } else{
         
             $product = Product::query()->find($productId);
+            // $product = Product::query()->findOrFail($productId);
+
             if($product){
                 $new_product = [
                 'title' => $product->title,
@@ -54,6 +56,17 @@ public static function hasProductInCart(int $productId): bool
 public static function getCart(): array
 {
     return session('cart') ?: [];
+}
+
+
+public static function getCartQuantityItems(): int 
+{
+    return count(self::getCart());
+}
+
+public static function getCartQuantityTotal(): int 
+{
+    return array_sum(array_column(self::getCart(), 'quantity'));
 }
 
 
