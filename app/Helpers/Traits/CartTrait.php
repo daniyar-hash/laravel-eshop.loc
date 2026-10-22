@@ -32,7 +32,7 @@ trait CartTrait {
                 
     }
 
-    public function deleteFromCart(int $productId)
+    public function deleteFromCart(int $productId): void
     {
         if(Cart::deleteProductFromCart($productId)){
              $this->js("toastr.success('Product deleted from Cart successfully!')");

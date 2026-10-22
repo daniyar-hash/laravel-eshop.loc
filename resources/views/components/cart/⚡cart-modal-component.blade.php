@@ -30,7 +30,7 @@ new class extends Component
             @if(Cart::getCart())
 
 
-   <div class="table-responsive">
+        <div class="table-responsive">
             <table class="table offcanvasCart-table">
                 <tbody>
                     @foreach(Cart::getCart() as $id => $item)
@@ -59,10 +59,10 @@ new class extends Component
                 </tfoot>
             </table>
     </div>
-        <div class="text-end mt-3">
-            <a href="#" class="btn btn-outline-warning">Cart</a>
-            <a href="#" class="btn btn-outline-secondary">Checkout</a>
-        </div>
+    <div class="text-end mt-3">
+        <a href="#" class="btn btn-outline-warning">Cart</a>
+        <a href="#" class="btn btn-outline-secondary">Checkout</a>
+    </div>
 
             @else 
                 <p>Cart is Empty...</p>
