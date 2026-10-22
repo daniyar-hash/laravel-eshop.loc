@@ -120,6 +120,7 @@
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="offcanvas offcanvas-start" id="offcanvasNavbar" tabindex="-1"
                      aria-labelledby="offcanvasNavbarLabel">
                     <div class="offcanvas-header">
@@ -132,9 +133,7 @@
                             <li class="nav-item">
                                 <a wire:navigate class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a wire:navigate class="nav-link" href="{{ route('category') }}">Category</a>
-                            </li>
+                           
                             <li class="nav-item">
                                 <a wire:navigate class="nav-link" href="{{ route('product') }}">Product</a>
                             </li>
@@ -145,6 +144,8 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     
+                                  
+
                                    {!!\App\Helpers\Category\Category::getMenu('incs.menu-tpl', 'categories_data') !!}
                                 
                                 
@@ -167,7 +168,6 @@
     <main class="main">
 
 
-
         {{ $slot }}
 
     </main>
@@ -179,7 +179,6 @@
                     <h4>Information</h4>
                     <ul class="list-unstyled">
                         <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('category') }}">Category</a></li>
                         <li><a href="{{ route('product') }}">Product</a></li>
                     </ul>
                 </div>

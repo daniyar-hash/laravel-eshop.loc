@@ -1,4 +1,5 @@
  <div class="product-card" >
+    
         <div class="product-card-offer">
             @if($product->is_hit)
             <div class="offer-hit">Hit</div>
@@ -10,7 +11,7 @@
         
         </div>
         <div class="product-thumb">
-            <a href="#"><img src="{{ $product->image}}" alt=""></a>
+            <a href="#"><img src="/{{ $product->image}}" alt=""></a>
         </div>
         <div class="product-details">
             <h4>

@@ -93,5 +93,28 @@ class Category
     }
 
 
+    public static function getIds(int $category_id): string //3
+    {
+      $ids = '';
+
+      $categories = self::getCategories();
+      foreach($categories as $category){
+        if($category['parent_id'] == $category_id){
+             $ids.= $category['id'] . ',';
+             $ids.= self::getIds($category['id']); // 7
+        }
+
+      }
+
+      return $ids;
+
+
+
+    }
+
+
+
+
+
 
 }
