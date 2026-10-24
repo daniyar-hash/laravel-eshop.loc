@@ -4,11 +4,14 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\Product;
 
+use Livewire\WithPagination;
+use App\Helpers\Traits\CartTrait;
 
 new class extends Component
 {
     
 
+    use WithPagination, CartTrait;
     public string $slug = '';
 
    
@@ -44,9 +47,11 @@ new class extends Component
 ?>
 <div>
     <div class="container">
+
+     
         <div class="row">
             <div class="col-12">
-                <nav class="breadcrumbs">
+                <nav class="breadcrumbs" id="breadcrumbs">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="#">Shop</a></li>
@@ -57,7 +62,14 @@ new class extends Component
         </div>
     </div>
 
-    <div class="container">
+    <div class="container position-relative">
+        
+           <div class="update-products" wire:loading wire:target.except="addCart">
+                <div class="spinner-grow fg-accent " role="status">
+                    <span class="visually-hidden">Loading…</span>
+                </div>
+          </div>
+
         <div class="row">
             <div class="col-lg-3 col-md-4">
                 <div class="sidebar">
@@ -240,7 +252,9 @@ new class extends Component
                     <div class="row">
                         <div class="col-12">
                             <nav aria-label="Page navigation example">
-                                <ul class="pagination">
+
+                                {{ $products->links(data: ['scrollTo' => '#breadcrumbs']) }}
+                                {{-- <ul class="pagination">
                                     <li class="page-item"><a class="page-link" href="#">Previous</a></li>
                                     <li class="page-item"><a class="page-link" href="#">1</a></li>
                                     <li class="page-item active" aria-current="page"><a class="page-link"
@@ -249,7 +263,7 @@ new class extends Component
                                     <li class="page-item"><a class="page-link" href="#">4</a></li>
                                     <li class="page-item"><a class="page-link" href="#">5</a></li>
                                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                </ul>
+                                </ul> --}}
                             </nav>
                         </div>
                     </div>

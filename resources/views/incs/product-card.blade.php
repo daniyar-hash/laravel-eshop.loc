@@ -11,7 +11,7 @@
         
         </div>
         <div class="product-thumb">
-            <a href="#"><img src="/{{ $product->image}}" alt=""></a>
+            <a href="#"><img src="{{ asset($product->image) }}" alt=""></a>
         </div>
         <div class="product-details">
             <h4>
