@@ -3,6 +3,7 @@
 use Livewire\Component;
 use App\Models\Category;
 use App\Models\Product;
+use Livewire\Attributes\Url;
 
 use Livewire\WithPagination;
 use App\Helpers\Traits\CartTrait;
@@ -12,7 +13,25 @@ new class extends Component
     
 
     use WithPagination, CartTrait;
+
     public string $slug = '';
+    #[Url]
+    public string $sortBy = 'default';
+
+    public int $limitBy = 3;
+
+
+    public array $sortList = [
+        'default' => ['title' => 'Default', 'order_field' => 'id', 'order_direction' => 'desc'],
+        'name-asc' => ['title' => 'Name (a-z)', 'order_field' => 'title', 'order_direction' => 'asc'],
+        'name-desc' => ['title' => 'Name (z-a)', 'order_field' => 'title', 'order_direction' => 'desc'],
+        'price-asc' => ['title' => 'Price (low > high)', 'order_field' => 'price', 'order_direction' => 'asc'],
+        'price-desc' => ['title' => 'Price (high > low)', 'order_field' => 'price', 'order_direction' => 'desc'],
+    ];
+
+    public array $limitList = [3,6,9,12];
+
+
 
    
 
@@ -20,6 +39,19 @@ new class extends Component
     {
         
         $this->slug = $slug;
+    }
+
+    public function changeSort()
+    {
+
+        $this->sortBy = isset($this->sortList[$this->sortBy]) ? $this->sortBy : 'default';
+       
+    }
+
+    public function changeLimit()
+    {
+        $this->limitBy = in_array($this->limitBy, $this->limitList) ? $this->limitBy : $this->limitList[0];
+        $this->resetPage();
     }
 
     public function render()
@@ -31,8 +63,8 @@ new class extends Component
         
         $products = Product::query()
         ->whereIn('category_id', explode(',', $ids))
-        ->orderBy('id', 'desc')
-        ->paginate(3);
+        ->orderBy($this->sortList[$this->sortBy]['order_field'], $this->sortList[$this->sortBy]['order_direction'])
+        ->paginate($this->limitBy);
 
 
         return $this->view([
@@ -218,23 +250,32 @@ new class extends Component
                         <div class="col-sm-6">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Sort By:</span>
-                                <select class="form-select" aria-label="Sort by:">
-                                    <option selected>Default</option>
-                                    <option value="1">Name (a-z)</option>
-                                    <option value="2">Name (z-a)</option>
-                                    <option value="3">Price (low &gt; high)</option>
-                                    <option value="4">Price (high &gt; low)</option>
+                                <select class="form-select" aria-label="Sort by:" wire:change="changeSort"
+                                 wire:model="sortBy" 
+                                >
+                                @foreach($sortList as $key => $value)
+                                      <option value="{{$key}}" @if($key == $sortBy) 
+                                       selected  @endif
+                                       wire:key="{{$key}}">{{$value['title']}}</option>
+                                @endforeach
+
+                                   
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">Show:</span>
-                                <select class="form-select" aria-label="Show:">
-                                    <option selected>9</option>
-                                    <option value="15">15</option>
-                                    <option value="30">30</option>
-                                    <option value="45">45</option>
+                                <select class="form-select" aria-label="Show:"
+                                wire:model="limitBy" wire:change="changeLimit">
+
+                                @foreach($limitList as $key => $value)
+                                    <option value="{{$value}}" @if($value == $limitBy)selected @endif\
+                                     wire:key="{{$key}}">{{$value}}</option>
+                                @endforeach
+
+                                    
+                               
                                 </select>
                             </div>
                         </div>
