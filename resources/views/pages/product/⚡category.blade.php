@@ -56,10 +56,16 @@ new class extends Component
 
     public function render()
     {
+
+
         $category = Category::query()->where('slug', '=', $this->slug)->firstOrFail();
 
+    
+
         $ids = App\Helpers\Category\Category::getIds($category->id) . $category->id;
-       
+        $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($category->id);
+
+              
         
         $products = Product::query()
         ->whereIn('category_id', explode(',', $ids))
@@ -69,7 +75,8 @@ new class extends Component
 
         return $this->view([
             'category' => $category,
-            'products' => $products
+            'products' => $products,
+            'breadcrumbs' => $breadcrumbs,
         ]);
         
     }
@@ -85,9 +92,19 @@ new class extends Component
             <div class="col-12">
                 <nav class="breadcrumbs" id="breadcrumbs">
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#">Shop</a></li>
-                        <li><span>Category Name</span></li>
+                        <li><a href="{{route('home')}}" wire:navigate>Home</a></li>
+
+                        @foreach($breadcrumbs as $breadcrumb_slug => $breadcrumbs_title)
+                        @if($loop->last)
+                         <li><span>{{$breadcrumbs_title }}</span></li>
+                        @else
+                        
+                          <li><a href="{{route('category',$breadcrumb_slug )}}">{{$breadcrumbs_title}}</a></li>
+                        @endif
+  
+                        @endforeach
+                        
+                   
                     </ul>
                 </nav>
             </div>
