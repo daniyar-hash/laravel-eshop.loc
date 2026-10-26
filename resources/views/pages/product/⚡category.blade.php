@@ -65,7 +65,21 @@ new class extends Component
         $ids = App\Helpers\Category\Category::getIds($category->id) . $category->id;
         $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($category->id);
 
-              
+        $category_filters = DB::table('category_filters')
+        ->select('category_filters.filter_group_id', 'filter_groups.title', 'filters.title as filter_title', 'filters.id as filter_id' )
+        ->join('filter_groups', 'category_filters.filter_group_id', '=', 'filter_groups.id')
+        ->join('filters', 'filters.filter_group_id', '=', 'filter_groups.id')
+        ->whereIn('category_filters.category_id', explode(',', $ids))
+        ->get();    
+        
+        dump($category_filters);
+        $filter_group = [];
+        foreach ($category_filters as $filter) {
+             $filter_group[$filter->filter_group_id][] = $filter;
+        }
+
+            dump($filter_group);
+
         
         $products = Product::query()
         ->whereIn('category_id', explode(',', $ids))
