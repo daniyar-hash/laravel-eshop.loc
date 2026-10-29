@@ -20,6 +20,9 @@ new class extends Component
 
     public int $limitBy = 3;
 
+    #[Url]
+    public array $filter_select = [];
+
 
     public array $sortList = [
         'default' => ['title' => 'Default', 'order_field' => 'id', 'order_direction' => 'desc'],
@@ -72,13 +75,13 @@ new class extends Component
         ->whereIn('category_filters.category_id', explode(',', $ids))
         ->get();    
         
-        dump($category_filters);
-        $filter_group = [];
+        // dump($category_filters);
+        $filter_groups = [];
         foreach ($category_filters as $filter) {
-             $filter_group[$filter->filter_group_id][] = $filter;
+             $filter_groups[$filter->filter_group_id][] = $filter;
         }
 
-            dump($filter_group);
+            // dump($filter_groups);
 
         
         $products = Product::query()
@@ -91,6 +94,7 @@ new class extends Component
             'category' => $category,
             'products' => $products,
             'breadcrumbs' => $breadcrumbs,
+            'filter_groups' => $filter_groups
         ]);
         
     }
@@ -144,125 +148,27 @@ new class extends Component
                     </button>
 
                     <div class="collapse collapse-filters" id="collapseFilters">
-                        <div class="filter-block">
-                            <h5 class="section-title"><span>Filter by color</span></h5>
-                            <form action="">
-                                <div class="form-check d-flex justify-content-between">
+                        @foreach($filter_groups as $key => $filter_group)
+                        <div class="filter-block" wire:key="{{$key}}">
+                            <h5 class="section-title"><span>Filter by {{ $filter_group[0]->title}}</span></h5>
+
+                            @foreach($filter_group as $filter)
+                                <div class="form-check d-flex justify-content-between" wire:ket="$filter->filter_id">
                                     <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="black">
-                                        <label class="form-check-label" for="black">
-                                            Black
+                                        <input class="form-check-input"
+                                        wire:model.live="filter_select"
+                                         type="checkbox" 
+                                         value="{{$filter->filter_id}}"
+                                          id="{{$filter->filter_id}}">
+                                        <label class="form-check-label" for="{{$filter->filter_id}}">
+                                            {{$filter->filter_title}}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="white">
-                                        <label class="form-check-label" for="white">
-                                            White
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="red">
-                                        <label class="form-check-label" for="red">
-                                            Red
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="blue">
-                                        <label class="form-check-label" for="blue">
-                                            Blue
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
+                             @endforeach
+                             
                         </div>
-
-                        <div class="filter-block">
-                            <h5 class="section-title">
-                                <span>Filter by size</span>
-                            </h5>
-
-                            <form action="">
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="xs">
-                                        <label class="form-check-label" for="xs">
-                                            XS
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="s">
-                                        <label class="form-check-label" for="s">
-                                            S
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="m">
-                                        <label class="form-check-label" for="m">
-                                            M
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="l">
-                                        <label class="form-check-label" for="l">
-                                            L
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="xl">
-                                        <label class="form-check-label" for="xl">
-                                            XL
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="filter-block">
-                            <h5 class="section-title">
-                                <span>Filter by type</span>
-                            </h5>
-
-                            <form action="">
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="man">
-                                        <label class="form-check-label" for="man">
-                                            Man
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="woman">
-                                        <label class="form-check-label" for="woman">
-                                            Woman
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-check d-flex justify-content-between">
-                                    <div>
-                                        <input class="form-check-input" type="checkbox" value="" id="baby">
-                                        <label class="form-check-label" for="baby">
-                                            Baby
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        @endforeach
                     </div>
 
 
