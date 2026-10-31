@@ -23,6 +23,12 @@ new class extends Component
     #[Url]
     public array $filter_select = [];
 
+   #[Url]
+    public $min_price;
+
+    #[Url]
+    public $max_price;
+
 
     public array $sortList = [
         'default' => ['title' => 'Default', 'order_field' => 'id', 'order_direction' => 'desc'],
@@ -46,7 +52,7 @@ new class extends Component
 
     public function updated($property)
     {
-        if($property == 'filter_select'){
+        if(in_array($property, ['filter_select', 'min_price', 'max_price'])){
             $this->resetPage();
         }
     }
@@ -66,13 +72,35 @@ new class extends Component
 
     public function render()
     {
+        
 
 
         $category = Category::query()->where('slug', '=', $this->slug)->firstOrFail();
-
-    
-
         $ids = App\Helpers\Category\Category::getIds($category->id) . $category->id;
+
+
+        // dump($this->min_price, $this->max_price);
+
+        // if(is_null($this->min_price) || is_null($this->max_price)){
+
+        if($this->min_price === null || $this->min_price === '' ||
+             $this->max_price === null || $this->max_price === ''){
+       
+        
+
+            $min_max_price = DB::table('products')
+            ->select(DB::raw('max(price) as max_price, min(price) as min_price '))
+            ->whereIn("category_id", explode(',',$ids))
+            ->get();
+            
+            $this->min_price = $this->min_price ?: $min_max_price[0]->min_price;//check for null and ""
+            $this->max_price = $this->max_price ?: $min_max_price[0]->max_price;
+           
+
+        }
+
+
+
         $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($category->id);
 
         $category_filters = DB::table('category_filters')
@@ -87,8 +115,7 @@ new class extends Component
         foreach ($category_filters as $filter) {
              $filter_groups[$filter->filter_group_id][] = $filter;
         }
-
-         
+        
 
       if($this->filter_select){
 
@@ -113,6 +140,7 @@ new class extends Component
             ->havingRaw("count(distinct filter_products.filter_group_id) >= $cnt_filter_groups");
 
         })
+        ->whereBetween('price', [$this->min_price, $this->max_price])
         ->orderBy($this->sortList[$this->sortBy]['order_field'], $this->sortList[$this->sortBy]['order_direction'])
         ->paginate($this->limitBy);
 
@@ -175,6 +203,13 @@ new class extends Component
                     </button>
 
                     <div class="collapse collapse-filters" id="collapseFilters">
+
+                            <div class="filter-price">
+                                <input type="number" class="form-control" wire:model.live.debounce.2000ms="min_price" value="{{$min_price}}">
+                                <input type="number" class="form-control" wire:model.live.debounce.2000ms="max_price" value="{{$max_price}}">
+                            </div>
+
+
                         @foreach($filter_groups as $key => $filter_group)
                         <div class="filter-block" wire:key="{{$key}}">
                             <h5 class="section-title"><span>Filter by {{ $filter_group[0]->title}}</span></h5>

@@ -620,6 +620,15 @@ footer a:hover {
     color: var(--contrast-color);
 }
 
+.filter-price{
+
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+
+}
+
 /* ============================= Category Page ============================ */
 
 
