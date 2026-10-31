@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('filter_group_id')->constrained('filter_groups');
             $table->primary(['filter_id', 'product_id']);
-            // $table->index('filter_id', 'filter_id');
+            $table->index('filter_id', 'filter_id');
         });
     }
 

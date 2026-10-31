@@ -4,7 +4,7 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\Product;
 use Livewire\Attributes\Url;
-
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\WithPagination;
 use App\Helpers\Traits\CartTrait;
 
@@ -44,6 +44,13 @@ new class extends Component
         $this->slug = $slug;
     }
 
+    public function updated($property)
+    {
+        if($property == 'filter_select'){
+            $this->resetPage();
+        }
+    }
+
     public function changeSort()
     {
 
@@ -81,11 +88,31 @@ new class extends Component
              $filter_groups[$filter->filter_group_id][] = $filter;
         }
 
-            // dump($filter_groups);
+         
 
+      if($this->filter_select){
+
+        $cnt_filter_groups = DB::table('filters')
+        ->select(DB::raw('count(distinct filter_group_id) as cnt'))
+        ->whereIn('id', $this->filter_select)
+        ->value('cnt');  
+
+        } else{
+            $cnt_filter_groups = 1;
+        }
+        // dump($cnt_filter_groups);
         
         $products = Product::query()
         ->whereIn('category_id', explode(',', $ids))
+        ->when($this->filter_select, function(Builder $query) use($cnt_filter_groups){
+
+            $query->leftJoin(DB::raw("filter_products FORCE INDEX FOR JOIN(filter_id)"),
+            "filter_products.product_id", "=", "products.id")
+            ->whereIn("filter_products.filter_id", $this->filter_select)
+            ->groupBy('id')
+            ->havingRaw("count(distinct filter_products.filter_group_id) >= $cnt_filter_groups");
+
+        })
         ->orderBy($this->sortList[$this->sortBy]['order_field'], $this->sortList[$this->sortBy]['order_direction'])
         ->paginate($this->limitBy);
 
@@ -153,14 +180,14 @@ new class extends Component
                             <h5 class="section-title"><span>Filter by {{ $filter_group[0]->title}}</span></h5>
 
                             @foreach($filter_group as $filter)
-                                <div class="form-check d-flex justify-content-between" wire:ket="$filter->filter_id">
+                                <div class="form-check d-flex justify-content-between" wire:key="{{$filter->filter_id}}">
                                     <div>
                                         <input class="form-check-input"
                                         wire:model.live="filter_select"
                                          type="checkbox" 
                                          value="{{$filter->filter_id}}"
-                                          id="{{$filter->filter_id}}">
-                                        <label class="form-check-label" for="{{$filter->filter_id}}">
+                                          id="filter-{{$filter->filter_id}}">
+                                        <label class="form-check-label" for="filter-{{$filter->filter_id}}">
                                             {{$filter->filter_title}}
                                         </label>
                                     </div>
@@ -207,7 +234,7 @@ new class extends Component
                                 wire:model="limitBy" wire:change="changeLimit">
 
                                 @foreach($limitList as $key => $value)
-                                    <option value="{{$value}}" @if($value == $limitBy)selected @endif\
+                                    <option value="{{$value}}" @if($value == $limitBy)selected @endif
                                      wire:key="{{$key}}">{{$value}}</option>
                                 @endforeach
 
@@ -253,3 +280,14 @@ new class extends Component
         </div>
     </div>
 </div>
+
+     {{-- ->when($this->filter_select, function(Builder $query) use($cnt_filter_groups){
+            
+            $query->leftJoin(DB::raw("filter_products FORCE INDEX FOR JOIN (PRIMARY)"),
+            'filter_products.product_id', '=', 'products.id')
+          ->whereIn('filter_products.filter_id', $this->filter_select)
+          ->groupBy('id')
+          ->havingRaw("count(distinct filter_products.filter_group_id ) >= $cnt_filter_groups");
+
+            
+        }) --}}
