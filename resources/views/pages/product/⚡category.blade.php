@@ -70,9 +70,29 @@ new class extends Component
         $this->resetPage();
     }
 
+    public function removeFilter($filterId)
+    {
+     
+            if (false!== ($key = array_search($filterId, $this->filter_select))) {
+                 unset($this->filter_select[$key]);
+                 $this->filter_select = array_values($this->filter_select);
+                 $this->resetPage();
+            }
+
+
+    }
+
+    public function clearFilters()
+    {
+        $this->filter_select = [];
+        $this->resetPage();
+    }
+
     public function render()
     {
         
+
+      
 
 
         $category = Category::query()->where('slug', '=', $this->slug)->firstOrFail();
@@ -159,7 +179,8 @@ new class extends Component
 ?>
 <div>
     <div class="container">
-
+     {{-- @dump($filter_groups)
+          @dump($filter_select) --}}
      
         <div class="row">
             <div class="col-12">
@@ -208,6 +229,30 @@ new class extends Component
                                 <input type="number" class="form-control" wire:model.live.debounce.2000ms="min_price" value="{{$min_price}}">
                                 <input type="number" class="form-control" wire:model.live.debounce.2000ms="max_price" value="{{$max_price}}">
                             </div>
+
+                            @if($filter_select)
+
+                            <button type="button" class="btn btn-outline-warning w-100 mb-3" wire:click="clearFilters">
+                                Clear Filters
+                            </button>
+
+                            <div class="selected-filters mb-3">
+                             @foreach($filter_groups as $filters)
+                                    @foreach($filters as $filter)
+                                        @if(in_array($filter->filter_id, $filter_select))
+                                             <p wire:click="removeFilter({{ $filter->filter_id }})" wire:key="{{ $filter->filter_id }}"
+                                                class="d-flex mb-1 align-items-center gap-1" style="cursor: pointer">
+                                                <i class="fa-solid fa-xmark text-danger"></i> {{ $filter->filter_title }}
+                                            </p>
+
+                                        @endif
+                                    @endforeach
+
+                          
+                             @endforeach
+                            </div>
+
+                            @endif
 
 
                         @foreach($filter_groups as $key => $filter_group)
