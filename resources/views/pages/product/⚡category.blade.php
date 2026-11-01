@@ -17,7 +17,7 @@ new class extends Component
     public string $slug = '';
     #[Url]
     public string $sortBy = 'default';
-
+    #[Url]
     public int $limitBy = 3;
 
     #[Url]
@@ -48,6 +48,14 @@ new class extends Component
     {
         
         $this->slug = $slug;
+
+       if(!isset($this->sortList[$this->sortBy])){
+            $this->redirectRoute('category', ['slug'=>$slug], navigate:true);
+       }
+
+        if(!in_array($this->limitBy, $this->limitList)){
+            $this->redirectRoute('category', ['slug'=>$slug], navigate:true);
+       }
     }
 
     public function updated($property)
@@ -240,14 +248,15 @@ new class extends Component
                              @foreach($filter_groups as $filters)
                                     @foreach($filters as $filter)
                                         @if(in_array($filter->filter_id, $filter_select))
-                                             <p wire:click="removeFilter({{ $filter->filter_id }})" wire:key="{{ $filter->filter_id }}"
-                                                class="d-flex mb-1 align-items-center gap-1" style="cursor: pointer">
+                                             <p wire:click="removeFilter({{ $filter->filter_id }})"
+                                                 wire:key="{{ $filter->filter_id }}"
+                                                class=" mb-1 align-items-center gap-1" 
+                                                style="cursor: pointer">
                                                 <i class="fa-solid fa-xmark text-danger"></i> {{ $filter->filter_title }}
                                             </p>
 
                                         @endif
                                     @endforeach
-
                           
                              @endforeach
                             </div>
