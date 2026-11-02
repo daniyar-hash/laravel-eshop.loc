@@ -134,9 +134,7 @@
                                 <a wire:navigate class="nav-link active" aria-current="page" href="{{ route('home') }}">Home</a>
                             </li>
                            
-                            <li class="nav-item">
-                                <a wire:navigate class="nav-link" href="{{ route('product') }}">Product</a>
-                            </li>
+                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false" data-bs-auto-close="outside">
@@ -144,12 +142,8 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     
-                                  
-
                                    {!!\App\Helpers\Category\Category::getMenu('incs.menu-tpl', 'categories_data') !!}
-                                
-                                
-                                
+                                                               
                                 </ul>
                             </li>
                         </ul>
@@ -179,7 +173,7 @@
                     <h4>Information</h4>
                     <ul class="list-unstyled">
                         <li><a href="{{ route('home') }}">Home</a></li>
-                        <li><a href="{{ route('product') }}">Product</a></li>
+                  
                     </ul>
                 </div>
 

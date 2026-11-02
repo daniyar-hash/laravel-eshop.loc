@@ -13,17 +13,20 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $gallery = [];
-
-        for($i = 0; $i < rand(0, 7); $i++){
-
-             $gallery[] = 'assets/img/products/' . ($i + 1) . '.jpg';   
-        }
-
-        shuffle($gallery);
+      
 
         for($j = 1; $j <=8; $j++){
             for($i = 1; $i <=10; $i++){
+
+
+              $gallery = [];
+
+                for($k = 0; $k < rand(0, 7); $k++){
+
+                    $gallery[] = 'assets/img/products/' . ($k + 1) . '.jpg';   
+                }
+
+              shuffle($gallery);
                 DB::table('products')->insert([
                 'title' => $title = fake()->unique()->sentence(3),
                 'slug' => str()->slug($title, '-'),

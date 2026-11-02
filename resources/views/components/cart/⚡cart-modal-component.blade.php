@@ -36,9 +36,9 @@ new class extends Component
                     @foreach(Cart::getCart() as $id => $item)
                     
                         <tr wire:key=$id>
-                            <td class="product-img-td"><a href="{{route('product')}}"><img src="{{asset($item['image']) }}" alt=""></a>
+                            <td class="product-img-td"><a href="{{route('product', $item['slug'])}}"><img src="{{asset($item['image']) }}" alt=""></a>
                             </td>
-                            <td><a href="{{route('product')}}">{{$item['title']}}</a></td>
+                            <td><a href="{{route('product', $item['slug'])}}">{{$item['title']}}</a></td>
                             <td>${{$item['price']}}</td>
                             <td>&times;{{$item['quantity']}}</td>
                             <td><button class="btn btn-danger"

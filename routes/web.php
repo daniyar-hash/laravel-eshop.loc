@@ -9,4 +9,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::main.home')->name('home');
 Route::livewire('/category/{slug}', 'pages::product.category')->name('category');
-Route::livewire('/product', 'pages::product.product')->name('product');
+Route::livewire('/product/{slug}', 'pages::product.product')->name('product');
