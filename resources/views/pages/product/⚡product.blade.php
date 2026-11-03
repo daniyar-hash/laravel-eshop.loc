@@ -2,6 +2,7 @@
 
 use Livewire\Component;
 use App\Models\Product;
+use App\Models\FilterGroup;
 
 
 new class extends Component
@@ -22,8 +23,8 @@ new class extends Component
 
         $product = Product::query()->where('slug', '=', $this->slug)->firstOrFail();
 
-        dump($product);
-        dump($product->gallery);
+        // dump($product);
+        // dump($product->gallery);
        
         $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($product->category_id);
 
@@ -33,11 +34,24 @@ new class extends Component
         ->limit(8)
         ->get();
 
+        // dump($product->id);
+
+        $productAttributes = FilterGroup::query()->selectRaw('filter_groups.title as filter_group_title, 
+        GROUP_CONCAT(filters.title SEPARATOR ", ") as filter_title')
+        ->join('filters', 'filter_groups.id', '=', 'filters.filter_group_id')
+        ->join('filter_products', 'filter_products.filter_id', '=', 'filters.id')
+        ->where('filter_products.product_id', '=', $product->id)
+        ->groupBy('filter_groups.title')
+        ->get();
+
+        dump($productAttributes);
+
           return $this->view([
             'slug' => $this->slug,
             'product' => $product,
             'breadcrumbs' => $breadcrumbs,
-            'related_products' => $related_products
+            'related_products' => $related_products,
+            'productAttributes' => $productAttributes,
         ]);
     }
 
@@ -71,22 +85,23 @@ new class extends Component
                 <div class="bg-white h-100">
                     <div id="carouselExampleFade" class="carousel carousel-dark slide carousel-fade">
                         <div class="carousel-inner">
+
                             <div class="carousel-item active">
-                                <img src="assets/img/products/1.jpg" class="d-block w-100" alt="...">
+                                <img src="{{asset($product->getImage())}}" class="d-block w-100" alt="...">
                             </div>
-                            <div class="carousel-item">
-                                <img src="assets/img/products/2.jpg" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="assets/img/products/3.jpg" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="assets/img/products/4.jpg" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="assets/img/products/5.jpg" class="d-block w-100" alt="...">
-                            </div>
+                       
+                                @foreach($product->gallery as $item)
+
+                                    <div class="carousel-item">
+                                        <img src="{{asset($item)}}" class="d-block w-100" alt="...">
+                                    </div>
+                            
+                                @endforeach
+                        
+
                         </div>
+
+                        @if($product->gallery)
                         <button class="carousel-control-prev" type="button"
                                 data-bs-target="#carouselExampleFade" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -97,22 +112,25 @@ new class extends Component
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
+
+                        @endif
                     </div>
                 </div>
             </div>
 
             <div class="col-md-7 col-lg-8 mb-3">
                 <div class="bg-white product-content p-3 h-100">
-                    <h1 class="section-title h3"><span>Product Name</span></h1>
+                    <h1 class="section-title h3"><span>{{$product->title}}</span></h1>
 
                     <div class="product-price">
-                        <small>$70</small>
-                        $65
+                        @if($product->old_price)
+                        <small>${{$product->old_price}}</small>
+                        @endif
+                        
+                       {{$product->price}}
                     </div>
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ducimus adipisci alias,
-                        minus totam fugiat quia unde ipsum aliquam suscipit officia ut iure sunt quis,
-                        doloremque quibusdam, similique eos veritatis.</p>
+                    <p>{{$product->excerpt}}</p>
 
                     <div class="product-add2cart">
                         <div class="input-group">
@@ -177,42 +195,38 @@ new class extends Component
                                     data-bs-target="#description-tab-pane" type="button" role="tab"
                                     aria-controls="description-tab-pane" aria-selected="true">Description</button>
                         </li>
+
+
+                        @if($productAttributes->isNotEmpty())
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="features-tab" data-bs-toggle="tab"
                                     data-bs-target="#features-tab-pane" type="button" role="tab"
                                     aria-controls="features-tab-pane" aria-selected="false">Features</button>
                         </li>
+                        @endif
                     </ul>
+
+              
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="description-tab-pane" role="tabpanel"
                              aria-labelledby="description-tab" tabindex="0">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure numquam ratione
-                                voluptatibus reiciendis? Vitae ex nesciunt repudiandae sunt deserunt! Quis
-                                numquam cum architecto illum, officia quo possimus! Earum, illo quaerat!</p>
-                            <p>Dolores illum sed officia? Assumenda iusto quis exercitationem eligendi, totam
-                                laudantium dignissimos quae corrupti soluta quasi ipsum nemo recusandae!
-                                Recusandae quibusdam maiores beatae et inventore architecto amet obcaecati vel
-                                neque.</p>
-                            <p>Obcaecati libero atque, excepturi facere magnam nulla, iure tempora ipsum dolorem
-                                autem eius cum exercitationem ad perspiciatis laboriosam rerum! Id, unde
-                                recusandae velit quam exercitationem quia minus nihil molestias dolorem?</p>
+                           {{!! $product->content !!}}
                         </div>
-                        <div class="tab-pane fade" id="features-tab-pane" role="tabpanel"
-                             aria-labelledby="features-tab" tabindex="0">
-                            <table class="table">
-                                <tbody>
-                                <tr>
-                                    <th scope="row">Colors</th>
-                                    <td>white, black, pink</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Sizes</th>
-                                    <td>S, M, L</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
+                        @if($productAttributes->isNotEmpty())
+                            <div class="tab-pane fade" id="features-tab-pane" role="tabpanel"
+                                aria-labelledby="features-tab" tabindex="0">
+                                <table class="table">
+                                    <tbody>
+                                        @foreach($productAttributes as $attribute)
+                                            <tr>
+                                                <th scope="row">{{$attribute->filter_group_title}}</th>
+                                                <td>{{$attribute->filter_title}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
                     </div>
                 </div>
             </div>
@@ -224,220 +238,21 @@ new class extends Component
             <div class="row mb-5">
                 <div class="col-12">
                     <h2 class="section-title">
-                        <span>Новинки</span>
+                        <span>Похожие товары</span>
                     </h2>
                 </div>
             </div>
 
             <div class="owl-carousel owl-theme owl-carousel-full">
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/1.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 1 Lorem ipsum dolor, sit amet consectetur
-                                adipisicing.</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            Placeat, aperiam!</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
+                @foreach($related_products as $product)
+                    <div class="" wire:key="{{ $product->id }}">
+                        @include('incs.product-card')
                     </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/2.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 2</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
+               
 
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <!-- <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div> -->
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/3.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 3 Lorem ipsum</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                $100
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/4.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 4</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/5.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 5 Lorem ipsum dolor, sit amet consectetur
-                                adipisicing.</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            Placeat, aperiam!</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/6.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 6</a>
-                        </h4>
-                        <p class="product-excerpt"></p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/7.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 7</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            Placeat, aperiam!</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-card-offer">
-                        <div class="offer-hit">Hit</div>
-                        <div class="offer-new">New</div>
-                    </div>
-                    <div class="product-thumb">
-                        <a href="product.html"><img src="assets/img/products/8.jpg" alt=""></a>
-                    </div>
-                    <div class="product-details">
-                        <h4>
-                            <a href="product.html">Product 8 Lorem</a>
-                        </h4>
-                        <p class="product-excerpt">Lorem ipsum dolor</p>
-                        <div class="product-bottom-details d-flex justify-content-between">
-                            <div class="product-price">
-                                <small>$70</small>
-                                $65
-                            </div>
-                            <div class="product-links">
-                                <a href="#" class="btn btn-outline-secondary add-to-cart"><i
-                                        class="fas fa-shopping-cart"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+             
             </div>
 
         </div>
