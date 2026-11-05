@@ -22,8 +22,8 @@ new class extends Component
             data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
         <i class="fa-solid fa-cart-shopping"></i>
         <span class="badge text-bg-warning cart-badge bg-warning rounded-circle">
-            {{-- {{Cart::getCartQuantityItems()}} --}}
-            {{Cart::getCartQuantityTotal()}}
+            {{Cart::getCartQuantityItems()}}
+          
         </span>
          {{-- {{Cart::getCartQuantityTotal()}} --}}
     </button>

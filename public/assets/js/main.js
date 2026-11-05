@@ -1,4 +1,6 @@
 window.addEventListener('scroll', function () {
+
+    
     document.getElementById('header-nav').classList.toggle('headernav-scroll', window.scrollY > 135);
 });
 
@@ -42,3 +44,10 @@ toastr.options = {
     "showMethod": "slideDown",
     "hideMethod": "slideUp"
 }
+
+
+window.addEventListener("popstate", function(e){
+
+    window.location.reload();
+})
+

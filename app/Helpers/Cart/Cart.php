@@ -15,7 +15,7 @@ public static function addCart(int $productId, int $quantity = 1): bool
 
     if(self::hasProductInCart($productId)){
 
-
+        //    dump($quantity);
             session(["cart.{$productId}.quantity" => session("cart.{$productId}.quantity") + $quantity]);
             $addedPr = true;
 

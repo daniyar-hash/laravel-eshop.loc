@@ -3,10 +3,14 @@
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\FilterGroup;
+use App\Helpers\Traits\CartTrait;
+
 
 
 new class extends Component
 {
+
+    use CartTrait;
 
 
     public string $slug = '';
@@ -21,9 +25,11 @@ new class extends Component
     public function render()
     {
 
+        // dump($this->quantity);
+
         $product = Product::query()->where('slug', '=', $this->slug)->firstOrFail();
 
-        // dump($product);
+        //  dump($product);
         // dump($product->gallery);
        
         $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($product->category_id);
@@ -34,7 +40,7 @@ new class extends Component
         ->limit(8)
         ->get();
 
-        // dump($product->id);
+        //  dump($related_products);
 
         $productAttributes = FilterGroup::query()->selectRaw('filter_groups.title as filter_group_title, 
         GROUP_CONCAT(filters.title SEPARATOR ", ") as filter_title')
@@ -44,7 +50,7 @@ new class extends Component
         ->groupBy('filter_groups.title')
         ->get();
 
-        dump($productAttributes);
+        // dump($productAttributes);
 
           return $this->view([
             'slug' => $this->slug,
@@ -134,9 +140,20 @@ new class extends Component
 
                     <div class="product-add2cart">
                         <div class="input-group">
-                            <input type="number" class="form-control" value="1" min="1">
-                            <button class="btn btn-warning"><i class="fas fa-shopping-cart"></i> Add to
-                                cart</button>
+                            <input type="number" class="form-control" value="{{$quantity}}"
+                            wire:model="quantity" min="1" >
+                            <button class="btn btn-warning" wire:click="addCart({{$product->id}}, true)"
+                            wire:loading.attr="disabled">
+                            
+                                 <i class="fas fa-shopping-cart"></i>
+                                 <span>Add to cart</span>
+                            <div wire:loading wire:target="addCart({{$product->id}}, true)"> 
+                                <div class="spinner-grow spinner-grow-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                                </div>
+                           </div>
+                            
+                            </button>
                         </div>
                     </div>
 
@@ -233,6 +250,7 @@ new class extends Component
         </div>
     </div>
 
+    @if(count($related_products))
     <section class="new-products">
         <div class="container">
             <div class="row mb-5">
@@ -242,22 +260,18 @@ new class extends Component
                     </h2>
                 </div>
             </div>
-
-            <div class="owl-carousel owl-theme owl-carousel-full">
+            <div class="owl-carousel owl-theme owl-carousel-full" wire:ignore>
 
                 @foreach($related_products as $product)
                     <div class="" wire:key="{{ $product->id }}">
                         @include('incs.product-card')
-                    </div>
+                    </div> 
                 @endforeach
-               
-
-             
+            
             </div>
-
         </div>
     </section>
-
+@endif
 </div>
 
 @script

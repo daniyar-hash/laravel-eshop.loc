@@ -7,12 +7,12 @@ use App\Helpers\Cart\Cart;
 
 trait CartTrait {
 
-    public int $quantity = 1; 
+    public $quantity = 1; 
 
     public function addCart(int $productId, $quantity = false)
     {
 
-        $quantity = $quantity ? $this->quantity : 1;
+        $quantity = $quantity ? (int)$this->quantity : 1;
         
         if($quantity < 1){
             $quantity = 1;
@@ -20,7 +20,7 @@ trait CartTrait {
        
         // $res = Cart::addCart($productId, $quantity);
 
-
+            
             if(Cart::addCart($productId, $quantity)){
                 $this->js("toastr.success('Product added in Cart successfully!')");
                 $this->dispatch('cart-updated');
