@@ -1,10 +1,33 @@
 <?php
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
+
 
 new class extends Component
 {
-    //
+    public string $email;
+    public string $password;
+
+    public function login()
+    {
+        $validated = $this->validate([
+            'email' =>'required|email',
+            'password' => 'required'
+        ]);
+
+        // dump($validated);
+
+         if(Auth::attempt($validated)){
+            session()->flash('success', 'Login successfull !');
+            $this->redirectRoute('home', navigate:true);
+         }else{
+            $this->js("toastr.error('Login failed!')");
+            $this->reset();
+         }
+
+
+    }
 };
 ?>
 

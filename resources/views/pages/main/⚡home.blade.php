@@ -229,6 +229,16 @@ new class extends Component
 
 </div>
 
+
+@if(session('success'))
+@script
+<script>
+    toastr.success('{{session('success')}}')
+</script>
+@endscript
+
+@endif
+
 @script
 <script>
     $(function () {

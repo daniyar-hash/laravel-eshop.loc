@@ -17,3 +17,10 @@ Route::middleware('guest')->group(function(){
     Route::livewire('/register', 'pages::user.register')->name('register');
 
 });
+
+Route::middleware('auth')->group(function(){
+    Route::get('/logout', function(){
+        auth()->logout();
+        return redirect()->route('login');
+    })->name('logout');
+});

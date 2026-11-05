@@ -31,7 +31,7 @@ new class extends Component
                         <a class="dropdown-item" >Your Account</a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">Log out</a>
+                        <a class="dropdown-item" href="{{route('logout')}}">Log out</a>
                     </li>
                 
                         @if(auth()->user()->is_admin)
