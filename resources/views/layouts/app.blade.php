@@ -29,7 +29,7 @@
 <div class="wrapper">
 
     <header class="header">
-        <div class="header-top py-1 d-none">
+        <div class="header-top py-1">
             <div class="container">
                 <div class="row">
                     <div class="col-6 col-sm-4">
@@ -60,24 +60,7 @@
                     </div>
 
                     <div class="col-6 col-sm-4">
-                        <div class="header-top-account d-flex justify-content-end">
-                            <div class="btn-group me-2">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                        Account
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="#">Sign In</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">Sign Up</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                       <livewire:user.nav-component />
                         <!-- ./header-top-account -->
                     </div>
                 </div>
@@ -85,7 +68,7 @@
         </div>
         <!-- ./header-top -->
 
-        <div class="header-middle bg-white py-4 d-none">
+        <div class="header-middle bg-white py-4">
             <div class="container">
                 <div class="row align-items-center">
 
