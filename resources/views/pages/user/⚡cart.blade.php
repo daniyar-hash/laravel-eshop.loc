@@ -4,6 +4,7 @@ use Livewire\Component;
 use App\Helpers\Cart\Cart;
 use App\Helpers\Traits\CartTrait;
 use Livewire\Attributes\On; 
+use Illuminate\Support\Number;
 
 
 new class extends Component
@@ -44,7 +45,8 @@ new class extends Component
                     @if($cart = Cart::getCart())
                         <div class="position-relative table-responsive">
                             
-                            <div class="update-loading update-products" wire:loading wire:target="updateItemQuanity()">
+                            <div class="update-loading update-products"
+                             wire:loading wire:target="updateItemQuanity,deleteFromCart,clearCart">
                                 <div class="spinner-border" role="status">
                                     <span class="visually-hidden">Loading...</span>
                                 </div>
@@ -99,7 +101,10 @@ new class extends Component
                                         </td>
                                         <td>${{$item['price'] * $item['quantity']}}</td>
                                         <td>
-                                            <button class="btn btn-danger">
+                                            <button class="btn btn-danger" wire:navigate
+                                                wire:click="deleteFromCart({{$id}})"
+                                                wire:loading.attr="disabled"
+                                                wire:target="deleteFromCart">
                                                 <i class="fa-regular fa-circle-xmark"></i>
                                             </button>
                                         </td>
@@ -110,7 +115,8 @@ new class extends Component
                                 <tfoot>
                                 <tr>
                                     <td colspan="6" class="text-end">
-                                        <button class="btn btn-outline-warning">Update Cart</button>
+                                        <button wire:loading.attr="disabled" wire:target="clearCart" wire:click="clearCart({{$id}})"
+                                        class="btn btn-outline-danger">Clear Cart</button>
                                     </td>
                                 </tr>
                                 </tfoot>
@@ -128,23 +134,25 @@ new class extends Component
                     <h5 class="section-title"><span>Cart Summary</span></h5>
 
                     <div class="d-flex justify-content-between my-3">
-                        <h6>Subtotal</h6>
-                        <h6>$1000</h6>
+                        <h6>Products</h6>
+                        <h6>{{Cart::getCartQuantityTotal()}}</h6>
                     </div>
 
                     <div class="d-flex justify-content-between my-3 border-bottom">
-                        <h6>Shipping</h6>
-                        <h6>$10</h6>
+                        <h6>Items</h6>
+                        <h6>{{Cart::getCartQuantityItems()}}</h6>
                     </div>
 
                     <div class="d-flex justify-content-between my-3">
                         <h3>Total</h3>
-                        <h3>$990</h3>
+                        <h3>{{ Number::currency(Cart::getTotalProducts(), in: 'USD') }}</h3>
                     </div>
-
-                    <div class="d-grid">
+                    @if($cart)
+                     <div class="d-grid">
                         <a href="#" class="btn btn-warning">Checkout</a>
                     </div>
+                    @endif
+                   
 
                 </div>
 

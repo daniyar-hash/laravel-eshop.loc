@@ -91,6 +91,23 @@ public static function deleteProductFromCart(int $productId): bool
 }
 
 
+  public static function updateQuantity(int $productId, int $quantity): bool
+    {
+        $update = false;
+        if(self::hasProductInCart($productId)){
+             session(["cart.{$productId}.quantity" => $quantity]);
+             $update = true;
+        }
+
+        return $update;
+    }
+
+    public static function clearCart(int $productId)
+    {
+        session()->forget('cart');
+    }
+
+
 
 
 

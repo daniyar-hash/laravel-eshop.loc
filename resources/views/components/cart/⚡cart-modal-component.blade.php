@@ -41,7 +41,8 @@ new class extends Component
                             <td><a href="{{route('product', $item['slug'])}}">{{$item['title']}}</a></td>
                             <td>${{$item['price']}}</td>
                             <td>&times;{{$item['quantity']}}</td>
-                            <td><button class="btn btn-danger" wire:navigate
+                            <td>
+                                <button class="btn btn-danger" wire:navigate
                                  wire:click="deleteFromCart({{$id}})"
                                  wire:loading.attr="disabled"
                                  wire:target="deleteFromCart">

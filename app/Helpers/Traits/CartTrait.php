@@ -41,6 +41,23 @@ trait CartTrait {
              $this->js("toastr.error('Oops! Something went wrong!')");
         }
     }
+
+    public function updateItemQuanity(int $productId, int $quantity)
+    {
+        if(Cart::updateQuantity($productId, $quantity)){
+             $this->js("toastr.success('Quantity updated!')");
+             $this->dispatch('cart-updated');
+        }else{
+            $this->js("toastr.error('Error updating!')");
+        }
+    }
+
+    public function clearCart(int $productId)
+    {
+        Cart::clearCart($productId);
+        $this->js("toastr.info('Cart cleared!')");
+        $this->dispatch('cart-updated');
+    }
      
 
 }
