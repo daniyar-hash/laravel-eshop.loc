@@ -149,7 +149,7 @@ new class extends Component
                     </div>
                     @if($cart)
                      <div class="d-grid">
-                        <a href="#" class="btn btn-warning">Checkout</a>
+                        <a href="{{route('checkout')}}" class="btn btn-warning"  wire:navigate>Checkout</a>
                     </div>
                     @endif
                    

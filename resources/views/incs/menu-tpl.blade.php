@@ -1,6 +1,6 @@
 <li @if(isset($val['children'])) class="nav-item dropend" @endif>
    @if(isset($val['children']))
-        <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown"
+        <a class="dropdown-item dropdown-toggle" href="#"  wire:navigate data-bs-toggle="dropdown"
            data-bs-auto-close="outside">{{$val['title'] }}</a>
         <ul class="dropdown-menu dropdown-menu-end">
            {!! \App\Helpers\Category\Category::getHtml($val['children']) !!}
