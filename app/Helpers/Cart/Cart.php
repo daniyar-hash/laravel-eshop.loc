@@ -102,7 +102,7 @@ public static function deleteProductFromCart(int $productId): bool
         return $update;
     }
 
-    public static function clearCart(int $productId)
+    public static function clearCart()
     {
         session()->forget('cart');
     }

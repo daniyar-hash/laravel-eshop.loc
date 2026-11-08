@@ -4,6 +4,11 @@ use Livewire\Component;
 use App\Helpers\Cart\Cart;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderClient;
+use App\Mail\OrderManager;
+
+
 
 
 
@@ -53,14 +58,19 @@ new class extends Component
                 ];
             }
 
-            // dump($order_products);
-
             $order->orderProducts()->createMany($order_products);
+            Mail::to($validated['email'])->send(new OrderClient($order->id, 
+            Cart::getTotalProducts(), $order_products, $validated['note']));
 
 
-           
-            $this->js("toastr.success('Success ordering!')");
+            Mail::to('eshop@maneger.loc')->send(new OrderManager($order->id,  Cart::getTotalProducts()));
+
+            Cart::clearCart();
+            $this->dispatch('cart-updated');
+
             DB::commit();
+            $this->js("toastr.success('Success ordering!')");
+
         } catch(\Exception $e){
 
             DB::rollback();

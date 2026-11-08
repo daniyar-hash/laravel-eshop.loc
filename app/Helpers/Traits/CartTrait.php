@@ -52,9 +52,9 @@ trait CartTrait {
         }
     }
 
-    public function clearCart(int $productId)
+    public function clearCart()
     {
-        Cart::clearCart($productId);
+        Cart::clearCart();
         $this->js("toastr.info('Cart cleared!')");
         $this->dispatch('cart-updated');
     }
