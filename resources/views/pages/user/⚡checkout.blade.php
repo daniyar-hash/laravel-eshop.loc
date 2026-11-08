@@ -1,10 +1,74 @@
 <?php
 
 use Livewire\Component;
+use App\Helpers\Cart\Cart;
+use App\Models\Order;
+use App\Models\OrderProduct;
+
+
 
 new class extends Component
 {
-    //
+    public string $name;
+    public string $email;
+    public string $note;
+
+    public function mount()
+    {
+        $this->name = auth()->user()->name ?? '';
+        $this->email = auth()->user()->email ?? '';
+    }
+
+    public function saveOrder()
+    {
+        $validated = $this->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'note' => 'string|nullable'
+        ]);
+
+        $validated = array_merge([
+            'user_id' => auth()->id(),
+            'total' => Cart::getTotalProducts()
+        ], $validated);
+
+        //  dump($validated);
+
+        try{
+            DB::beginTransaction();
+            $order = Order::query()->create($validated);
+
+            $order_products = [];
+            $cart = Cart::getCart();
+           //dump($cart);
+
+            foreach ($cart as $key => $value) {
+                $order_products[] = [
+                    'product_id' => $key,
+                    'title' => $value['title'],
+                    'price' => $value['price'],
+                    'quantity' => $value['quantity'],
+                    'slug' => $value['slug'],
+                    'image' => $value['image'],
+                ];
+            }
+
+            // dump($order_products);
+
+            $order->orderProducts()->createMany($order_products);
+
+
+           
+            $this->js("toastr.success('Success ordering!')");
+            DB::commit();
+        } catch(\Exception $e){
+
+            DB::rollback();
+            Log::error($e->getMessage());
+            $this->js("toastr.error('Error ordering!')");
+
+        }
+    }
 };
 ?>
 

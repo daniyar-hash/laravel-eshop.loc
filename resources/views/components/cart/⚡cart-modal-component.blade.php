@@ -62,7 +62,7 @@ new class extends Component
     </div>
     <div class="text-end mt-3">
         <a href="{{route('cart')}}" class="btn btn-outline-warning" wire:navigate>Cart</a>
-        <a href="{{route('checkout')}}" class="btn btn-outline-secondary"  wire:navigate>Checkout</a>
+        <a href="{{route('checkout')}}" class="btn btn-outline-secondary" wire:navigate>Checkout</a>
     </div>
 
             @else 
