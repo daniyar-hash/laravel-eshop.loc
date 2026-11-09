@@ -78,7 +78,7 @@ new class extends Component
 
                                 <div class="mb-3">
                                     <label for="password" class="form-label required">Password</label>
-                                    <input type="password" class="form-control @error('email') is-invalid @enderror" id="password"
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
                                            placeholder="Password" wire:model="password">
                                     @error('password')
                                     <div class="invalid-feedback">
