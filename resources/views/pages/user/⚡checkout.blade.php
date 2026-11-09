@@ -36,7 +36,7 @@ new class extends Component
             'user_id' => auth()->id(),
             'total' => Cart::getTotalProducts()
         ], $validated);
-
+ 
         //  dump($validated);
 
         try{
