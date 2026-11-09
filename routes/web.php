@@ -25,4 +25,9 @@ Route::middleware('auth')->group(function(){
         auth()->logout();
         return redirect()->route('login');
     })->name('logout');
+
+    Route::livewire('/account', 'pages::user.account-component')->name('account');
+    Route::livewire('/change-account', 'pages::user.change-account-component')->name('change-account');
+    Route::livewire('/orders', 'pages::user.orders-component')->name('orders');
+    Route::livewire('/order-show/{id}', 'pages::user.order-show-component')->name('order-show');
 });

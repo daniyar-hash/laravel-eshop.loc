@@ -28,7 +28,7 @@ new class extends Component
                 @endguest
                 @auth
                     <li>
-                        <a class="dropdown-item" >Your Account</a>
+                        <a  href="{{route('account')}}" class="dropdown-item" wire:navigate>Your Account</a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{route('logout')}}">Log out</a>
