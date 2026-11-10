@@ -4,7 +4,9 @@ use Livewire\Component;
 
 new class extends Component
 {
-    //
+
+
+    
 };
 ?>
 
@@ -29,6 +31,7 @@ new class extends Component
         <div class="row">
              <div class="col-lg-4 mb-3">
                 <div class="cart-summary p-3 sidebar">
+                        <h5 class="section-title"><span>Account</span></h5>
                     @include('incs.account-links')
                 </div>
             </div>

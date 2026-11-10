@@ -60,7 +60,7 @@ new class extends Component
 
             $order->orderProducts()->createMany($order_products);
             Mail::to($validated['email'])->send(new OrderClient($order->id, 
-            Cart::getTotalProducts(), $order_products, $validated['note']));
+            Cart::getTotalProducts(), $order_products, $validated['note'] ??'') );
 
 
             Mail::to('eshop@maneger.loc')->send(new OrderManager($order->id,  Cart::getTotalProducts()));
@@ -151,7 +151,7 @@ new class extends Component
                                 </div>
 
                                 <div class="mb-3">
-                                    <button type="submit" class="btn btn-warning">
+                                    <button type="submit" class="btn btn-warning" wire:navigate>
                                         Checkout
                                         <div wire:loading wire:target="saveOrder">
                                             <div class="spinner-grow spinner-grow-sm" role="status">
