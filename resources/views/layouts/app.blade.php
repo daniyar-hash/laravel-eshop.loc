@@ -76,17 +76,7 @@
                         <a wire:navigate href="{{ route('home') }}" class="header-logo h1">E-Shop</a>
                     </div>
 
-                    <div class="col-sm-6 mt-2 mt-md-0">
-                        <form action="">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="s" placeholder="Searching..."
-                                       aria-label="Searching..." aria-describedby="button-search">
-                                <button class="btn btn-outline-warning" type="submit" id="button-search">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                   <livewire:search.search-form-component />
 
                 </div>
             </div>

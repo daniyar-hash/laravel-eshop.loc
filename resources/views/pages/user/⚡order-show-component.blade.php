@@ -22,8 +22,6 @@ new class extends Component
         ->where('id', '=', $this->id)
         ->firstOrFail();
 
-      
-
         return $this->view([
             'order' => $order
         ]);

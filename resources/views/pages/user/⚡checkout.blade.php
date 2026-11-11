@@ -60,16 +60,20 @@ new class extends Component
   
 
             $order->orderProducts()->createMany($order_products);
-            Mail::to($validated['email'])->send(new OrderClient($order->id, 
-            Cart::getTotalProducts(), $order_products, $validated['note'] ??'') );
+            DB::commit();
 
+            try{
 
-            Mail::to('eshop@maneger.loc')->send(new OrderManager($order->id,  Cart::getTotalProducts()));
+                Mail::to($validated['email'])->send(new OrderClient($order->id, 
+                Cart::getTotalProducts(), $order_products, $validated['note']));
 
+                Mail::to('eshop@maneger.loc')->send(new OrderManager($order->id,  Cart::getTotalProducts()));
+            }catch(\Exception $e){
+                Log::error($e->getMessage());
+            }
+          
             Cart::clearCart();
             $this->dispatch('cart-updated');
-
-            DB::commit();
             $this->js("toastr.success('Success ordering!')");
 
         } catch(\Exception $e){
@@ -152,7 +156,7 @@ new class extends Component
                                 </div>
 
                                 <div class="mb-3">
-                                    <button type="submit" class="btn btn-warning" wire:navigate>
+                                    <button type="submit" class="btn btn-warning">
                                         Checkout
                                         <div wire:loading wire:target="saveOrder">
                                             <div class="spinner-grow spinner-grow-sm" role="status">
