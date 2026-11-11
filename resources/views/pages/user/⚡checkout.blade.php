@@ -57,6 +57,7 @@ new class extends Component
                     'image' => $value['image'],
                 ];
             }
+  
 
             $order->orderProducts()->createMany($order_products);
             Mail::to($validated['email'])->send(new OrderClient($order->id, 
