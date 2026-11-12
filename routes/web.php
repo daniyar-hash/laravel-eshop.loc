@@ -13,6 +13,7 @@ Route::livewire('/category/{slug}', 'pages::product.category')->name('category')
 Route::livewire('/product/{slug}', 'pages::product.product')->name('product');
 Route::livewire('/cart', 'pages::user.cart')->name('cart');
 Route::livewire('/checkout', 'pages::user.checkout')->name('checkout');
+Route::livewire('/search', 'pages::search.search-component')->name('search');
 
 Route::middleware('guest')->group(function(){
     Route::livewire('/login', 'pages::user.login')->name('login');

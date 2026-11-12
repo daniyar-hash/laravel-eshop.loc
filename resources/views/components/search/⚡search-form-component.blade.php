@@ -13,7 +13,7 @@ new class extends Component
     {
 
         if($this->term){
-            dump($this->term);
+           $this->redirectRoute('search', ['query' => $this->term], navigate:true);
         }
       
     }
