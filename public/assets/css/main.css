@@ -270,6 +270,8 @@ ul.social-icons a:hover {
     position: absolute;
     right: 50px;
     top: 8px;
+    z-index: 10;
+    
     
 }
 
