@@ -320,7 +320,7 @@ ul.social-icons a:hover {
 
 .header-bottom .navbar .nav-link {
     color: #fff;
-    transition: .3s all;
+    transition: transform 0.3s ease;
     letter-spacing: .1rem;
 }
 
@@ -336,10 +336,19 @@ ul.social-icons a:hover {
     margin-top: 7px;
 }
 
-.headernav-scroll.header-bottom .navbar .offcanvas:not(.show) .nav-link {
+/* .headernav-scroll.header-bottom .navbar .offcanvas:not(.show) .nav-link {
     padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
+    padding-bottom: 0.3rem; */
+      /* transform: scaleY(0.8); */
+    /* border:2px solid red;
+} 
+*/
+
+.header-bottom .navbar .nav-link {
+    transition: padding 0.3s ease;
 }
+
+
 
 /* ============================= Header ============================ */
 

@@ -22,14 +22,25 @@ new class extends Component
         ->where('id', '=', $this->id)
         ->firstOrFail();
 
+        // dump($order);
+
         return $this->view([
-            'order' => $order
+            'order' => $order,
+            'title' => 'Order show #' . $order->id,
+            'desc' =>'Content about Order # ' . $order->id 
+             
         ]);
     }
-};
+}
 ?>
 
 <div>
+
+     @section('metatags')
+
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show
     <div class="container">
         <div class="row">
             <div class="col-12">

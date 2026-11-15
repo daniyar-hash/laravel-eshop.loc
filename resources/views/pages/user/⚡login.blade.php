@@ -28,10 +28,24 @@ new class extends Component
 
 
     }
-};
+
+      public function render(){
+    
+    
+        return $this->view([
+        'title' => 'Login user',
+        'desc' =>'Content about Login user'
+        ]);
+    }
+}
 ?>
 
 <div>
+     @section('metatags')
+
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show
 
     <div class="container">
         <div class="row">

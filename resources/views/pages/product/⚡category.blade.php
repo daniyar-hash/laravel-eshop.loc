@@ -20,6 +20,12 @@ new class extends Component
     #[Url]
     public int $limitBy = 3;
 
+
+    public string $category_title = '';
+
+ 
+    public int $category_page = 1 ;
+
     #[Url]
     public array $filter_select = [];
 
@@ -65,6 +71,13 @@ new class extends Component
         }
     }
 
+    public function updatedPage($page){
+     
+      $page_title = $page > 1 ? "Page-{$page}" : "Page-1";
+      $this->dispatch('page-updated', title: config('app.name') .
+       "Category::{$this->category_title}{$page_title}");
+    }
+
     public function changeSort()
     {
 
@@ -99,23 +112,13 @@ new class extends Component
     public function render()
     {
         
-
-      
-
-
         $category = Category::query()->where('slug', '=', $this->slug)->firstOrFail();
         $ids = App\Helpers\Category\Category::getIds($category->id) . $category->id;
-
-
         // dump($this->min_price, $this->max_price);
-
         // if(is_null($this->min_price) || is_null($this->max_price)){
-
         if($this->min_price === null || $this->min_price === '' ||
              $this->max_price === null || $this->max_price === ''){
-       
-        
-
+      
             $min_max_price = DB::table('products')
             ->select(DB::raw('max(price) as max_price, min(price) as min_price '))
             ->whereIn("category_id", explode(',',$ids))
@@ -127,9 +130,6 @@ new class extends Component
 
         }
 
-
-
-        $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($category->id);
 
         $category_filters = DB::table('category_filters')
         ->select('category_filters.filter_group_id', 'filter_groups.title', 'filters.title as filter_title', 'filters.id as filter_id' )
@@ -173,12 +173,27 @@ new class extends Component
         ->paginate($this->limitBy);
 
 
+
+        $page = request()->query('page', '1');
+    
+        if($page > $products->lastPage()){
+            abort(404);
+        }
+        
+        $this->category_title = $category->title;
+
+        $title = "Category {$category->title}" . ($page ? "::Page-{$page}" : "");
+
+        $breadcrumbs = App\Helpers\Category\Category::getBreadcrumbs($category->id);
+        
         return $this->view([
             'category' => $category,
             'products' => $products,
             'breadcrumbs' => $breadcrumbs,
-            'filter_groups' => $filter_groups
-        ]);
+            'filter_groups' => $filter_groups,
+            'title' => $title,
+            'desc' => 'Description content of Category page'
+        ])->title($title);
         
     }
    
@@ -186,10 +201,15 @@ new class extends Component
 };
 ?>
 <div>
+    @section('metatags')
+
+        <title>{{ config('app.name') ."::" . ($title ?? 'Page Title')}}</title>
+        <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+    @show 
+
+
+
     <div class="container">
-     {{-- @dump($filter_groups)
-          @dump($filter_select) --}}
-     
         <div class="row">
             <div class="col-12">
                 <nav class="breadcrumbs" id="breadcrumbs">
@@ -348,16 +368,7 @@ new class extends Component
                             <nav aria-label="Page navigation example">
 
                                 {{ $products->links(data: ['scrollTo' => '#breadcrumbs']) }}
-                                {{-- <ul class="pagination">
-                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item active" aria-current="page"><a class="page-link"
-                                                                                        href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                </ul> --}}
+                           
                             </nav>
                         </div>
                     </div>
@@ -370,6 +381,16 @@ new class extends Component
     </div>
 </div>
 
+@script
+<script>
+
+    $wire.on('page-updated', $data =>{
+        console.log($data);
+        document.title = $data.title;
+    })
+
+</script>
+@endscript
      {{-- ->when($this->filter_select, function(Builder $query) use($cnt_filter_groups){
             
             $query->leftJoin(DB::raw("filter_products FORCE INDEX FOR JOIN (PRIMARY)"),

@@ -40,11 +40,29 @@ new class extends Component
 
     }
 
+    
+        public function render(){
+    
+    
+        return $this->view([
+        'title' => 'Change Account',
+        'desc' =>'Content about Change Account'
+        ]);
 
-};
+        }
+
+
+}
+
 ?>
 
 <div>
+
+         @section('metatags')
+
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show
 
     <div class="container">
         <div class="row">

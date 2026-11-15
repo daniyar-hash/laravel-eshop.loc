@@ -18,13 +18,21 @@ use WithPagination;
     ->paginate();
         // dump($orders);
     return $this->view([
-        'orders' => $orders
+        'orders' => $orders,
+        'title' => 'Orders list',
+        'desc' =>'Content about Orders list ' 
     ]);
    }
-};
+}
 ?>
 
 <div>
+
+     @section('metatags')
+
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show
     <div class="container">
         <div class="row">
             <div class="col-12">

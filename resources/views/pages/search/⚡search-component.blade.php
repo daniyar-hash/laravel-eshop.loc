@@ -30,19 +30,26 @@ new class extends Component
             }
 
         return $this->view([
-                'products' => $products
+                'products' => $products,
+                'title' => 'Search results',
+                'desc' => 'Content about search results'
             ]);
 
 
     }
 
 
-  
-
-};
+}
 ?>
 
 <div>
+
+       @section('metatags')
+
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show 
+
     <div class="container">
         
         <div class="row">
@@ -67,15 +74,11 @@ new class extends Component
           </div>
 
         <div class="row">
-            
-
             <div class="col-lg-12">
-                
-
+            
                 @if(count($products))
                   
                 <h1 class="h3"><span>Search by: <em>{{ $query }}</em></span></h1>
-
                     <div class="row">
                         @foreach($products as $product)
                         

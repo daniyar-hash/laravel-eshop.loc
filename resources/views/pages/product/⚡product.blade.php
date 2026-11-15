@@ -58,6 +58,8 @@ new class extends Component
             'breadcrumbs' => $breadcrumbs,
             'related_products' => $related_products,
             'productAttributes' => $productAttributes,
+            'title' => "Product " . $product->title,
+            'desc' => 'Content about Product'
         ]);
     }
 
@@ -67,7 +69,11 @@ new class extends Component
 ?>
 
 <div>
+        @section('metatags')
 
+            <title>{{ config('app.name') ."::" . ($title ?? 'Page Title') }}</title>
+            <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+        @show 
 
     <div class="container">
         <div class="row">

@@ -33,16 +33,26 @@ new class extends Component
         ->limit(8)
         ->get();
 
+     
+
 
         return $this->view([
             'hit_products' => $hit_products,
-            'new_products' => $new_products
+            'new_products' => $new_products,
+            'title' =>'Page::Home',
+            'desc' => 'Description content of Home page'
         ]);
     }
 };
 ?>
 
 <div>
+
+     @section('metatags')
+
+        <title>{{ config('app.name') ."::" . ($title ?? 'Page Title')}}</title>
+        <meta name="description" content="{{ $desc ?? 'Content Default...'}} ">
+    @show 
 
     <div id="carousel" class="carousel slide carousel-fade" wire:ignore>
         <div class="carousel-indicators">
