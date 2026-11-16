@@ -32,3 +32,12 @@ Route::middleware('auth')->group(function(){
     Route::livewire('/orders', 'pages::user.orders-component')->name('orders');
     Route::livewire('/order-show/{id}', 'pages::user.order-show-component')->name('order-show');
 });
+
+
+Route::prefix('admin')
+->name('admin.')
+->group(function(){
+
+    Route::livewire('/', 'pages::admin.home-component')->name('home');
+
+});

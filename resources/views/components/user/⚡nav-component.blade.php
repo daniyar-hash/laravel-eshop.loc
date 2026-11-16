@@ -36,7 +36,7 @@ new class extends Component
                 
                         @if(auth()->user()->is_admin)
                         <li>
-                            <a class="dropdown-item" href="#">Dashboard</a>
+                            <a class="dropdown-item" href="{{route('admin.home')}}">Dashboard</a>
                         </li>
                         @endif
                 @endauth
