@@ -78,7 +78,6 @@
                     </button>
 
              
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -182,9 +181,6 @@
             </div>
         </div>
     </div>
-
-      
-
 
 </body>
 
