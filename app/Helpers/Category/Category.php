@@ -14,8 +14,6 @@ class Category
     public static function getMenu(string $tpl, string $cacheKey = "")
     {
     
-        
-       
         self::$tpl = $tpl;
 
         if($cacheKey){
@@ -57,8 +55,6 @@ class Category
     {
 
       ob_start();
-
-
       echo view(self::$tpl, ['id'=>$id, 'val'=>$val, 'tab'=>$tab]);
       return ob_get_clean();
 

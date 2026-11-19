@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Metadata\Group;
+use App\Http\Middleware\AdminMiddleware;
+
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -35,9 +37,12 @@ Route::middleware('auth')->group(function(){
 
 
 Route::prefix('admin')
+->middleware('admin')
 ->name('admin.')
 ->group(function(){
 
     Route::livewire('/', 'pages::admin.home-component')->name('home');
+    Route::livewire('/categories', 'pages::admin.category.category-index-component')
+    ->name('categories.index');
 
 });

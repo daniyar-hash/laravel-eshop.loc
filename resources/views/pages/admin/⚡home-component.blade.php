@@ -6,10 +6,14 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Order;
 use Illuminate\Support\Number;
+use Livewire\Attributes\Title;
 
 
 
-new #[Layout('layouts::admin')] class extends Component
+new 
+#[Layout('layouts::admin')] 
+#[Title('Dashboard')] 
+class extends Component
 {
     
     public function render()
@@ -105,7 +109,7 @@ new #[Layout('layouts::admin')] class extends Component
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Orders Summary</div>
+                                Orders Total</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{Number::currency($orders_total, in: 'USD')}}</div>
                         </div>
                         <div class="col-auto">
