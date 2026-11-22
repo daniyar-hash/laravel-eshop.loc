@@ -6,7 +6,7 @@
       <a href="{{route('category', $val['slug'])}}" class="btn btn-info btn-circle" target="_blank">
             <i class="fa-regular fa-eye"></i>
       </a>
-       <a href="#" class="btn btn-warning btn-circle">
+       <a href="{{route('admin.categories.edit', $val['id'])}}" class="btn btn-warning btn-circle" wire:navigate>
             <i class="fa-solid fa-pen"></i>
       </a>
        <button class="btn btn-danger btn-circle" 

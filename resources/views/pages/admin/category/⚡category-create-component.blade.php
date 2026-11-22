@@ -25,11 +25,11 @@ class extends Component
 
         $category = Category::query()->create($validated);
         cache()->forget('categories_data');
-      //  session()->flash('success', 'Category crerated successfully!');
-      //  $this->redirectRoute('admin.categories.index', navigate:true);
-        // session()->flash('error', 'Category crerated successfully!');
-        $this->js("toastr.success('ok!')");
-        $this->js("toastr.error('Not ok!')");
+        session()->flash('success', 'Category crerated successfully!');
+        $this->redirectRoute('admin.categories.index', navigate:true);
+        session()->flash('error', 'Category crerated successfully!');
+        // $this->js("toastr.success('ok!')");
+        // $this->js("toastr.error('Not ok!')");
 
 
     }

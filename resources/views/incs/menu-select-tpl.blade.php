@@ -1,7 +1,10 @@
 <option value="{{$id}}"  wire:key="{{$id}}" 
 
-{!! $val['parent_id']==0 ? 'class="fw-bold"': '' !!}>
-{!! $tab . $val['title'] !!}
+{!! $val['parent_id']==0 ? 'class="font-weight-bold"': '' !!}
+@if(isset($this->id) && $val['id'] == $this->id) disabled style="color:#ccc;" @endif
+>
+
+{!! $tab . $val['title']   !!}
 
 </option>
 
