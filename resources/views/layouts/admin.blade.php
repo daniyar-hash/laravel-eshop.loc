@@ -22,6 +22,9 @@
     <link href="{{ asset('assets/admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" defer></script>
+    <link rel="stylesheet" href="{{ asset('assets/libs/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{asset('assets/admin/css/main.css')}}">
+
      <!-- Bootstrap core JavaScript-->
     <script src="{{asset('assets/admin/vendor/jquery/jquery.min.js')}}" defer></script>
     <script src="{{asset('assets/admin/vendor/bootstrap/js/bootstrap.bundle.min.js')}}" defer></script>
@@ -31,6 +34,10 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('assets/admin/js/sb-admin-2.min.js')}}" defer></script>
+    <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}" defer></script>
+    <script src="{{ asset('assets/admin/js/main.js') }}" defer></script>
+
+
 
 
 </head>
@@ -127,6 +134,27 @@
 
                 </nav>
                 <!-- End of Topbar -->
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                 {{ session('success')}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+
+                @endif
+
+                 @if(session('error'))
+                <div class="alert alert-error alert-dismissible fade show" role="alert">
+                 {{ session('error')}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+
+                @endif
+
+
                 {{ $slot }}
              
                 <!-- /.container-fluid -->

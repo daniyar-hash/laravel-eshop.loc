@@ -22,7 +22,7 @@ class extends Component
     <div class="col-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <a href="#" class="btn btn-primary">Add Category</a>
+                <a href="{{ route('admin.categories.create')}}" class="btn btn-primary" wire:navigate>Add Category</a>
             </div>
             <div class="card-body">
                  <div class="table-responsive">

@@ -44,5 +44,9 @@ Route::prefix('admin')
     Route::livewire('/', 'pages::admin.home-component')->name('home');
     Route::livewire('/categories', 'pages::admin.category.category-index-component')
     ->name('categories.index');
+     Route::livewire('/categories/create', 'pages::admin.category.category-create-component')
+    ->name('categories.create');
+
+    
 
 });
