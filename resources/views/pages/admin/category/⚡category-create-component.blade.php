@@ -25,7 +25,7 @@ class extends Component
 
         $category = Category::query()->create($validated);
         cache()->forget('categories_data');
-        session()->flash('success', 'Category crerated successfully!');
+        session()->flash('success', 'Category created successfully!');
         $this->redirectRoute('admin.categories.index', navigate:true);
         session()->flash('error', 'Category crerated successfully!');
         // $this->js("toastr.success('ok!')");

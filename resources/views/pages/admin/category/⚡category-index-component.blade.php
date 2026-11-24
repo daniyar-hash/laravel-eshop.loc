@@ -3,7 +3,9 @@
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
-use App\Helpers\Category\Category;
+use App\Models\Category;
+use App\Models\Product;
+
 
 
 
@@ -13,8 +15,33 @@ new
 class extends Component
 {
 
- 
-    
+    public function deleteCategory(Category $category)
+    {
+
+
+        $categories_cnt = Category::query()
+        ->where('parent_id', '=', $category->id)->count();
+        if($categories_cnt){
+            $this->js("toastr.error('Error! This Category has child')");
+            return;
+        }
+
+        $products_cnt = Product::query()
+        ->where('category_id', '=', $category->id)->count();
+        if($products_cnt){
+            $this->js("toastr.error('Error! This Category has products')");
+            return;
+        }
+
+        $category->delete();
+        cache()->forget('categories_data');
+        session()->flash('success', 'Category removed');
+        $this->redirectRoute('admin.categories.index', navigate:true);
+
+        
+    }
+
+
 };
 ?>
 
@@ -35,7 +62,7 @@ class extends Component
                             </tr>
                         </thead>
                         <tbody>
-                            {!! Category::getMenu('incs.menu-table-tpl') !!}
+                            {!! App\Helpers\Category\Category::getMenu('incs.menu-table-tpl') !!}
                         </tbody>
                     </table>
                   </div>
