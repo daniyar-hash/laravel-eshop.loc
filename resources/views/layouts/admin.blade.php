@@ -71,6 +71,13 @@
                    <i class="fa-solid fa-bars-staggered"></i>
                     <span>Categories</span></a>
             </li>
+
+             <li class="nav-item active">
+                <a class="nav-link" href="{{route('admin.products.index')}}" wire:navigate>
+                   <i class="fa-solid fa-rectangle-list fa-2x text-gray-300 "></i>
+                    <span>Products</span></a>
+            </li>
+
             <hr class="sidebar-divider d-none d-md-block">
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

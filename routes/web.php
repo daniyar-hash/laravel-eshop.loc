@@ -42,13 +42,21 @@ Route::prefix('admin')
 ->group(function(){
 
     Route::livewire('/', 'pages::admin.home-component')->name('home');
+
     Route::livewire('/categories', 'pages::admin.category.category-index-component')
     ->name('categories.index');
      Route::livewire('/categories/create', 'pages::admin.category.category-create-component')
      ->name('categories.create');
-
      Route::livewire('/categories/{category}/edit', 'pages::admin.category.category-edit-component')
     ->name('categories.edit');
+
+
+    Route::livewire('/products', 'pages::admin.product.product-index-component')
+    ->name('products.index');
+     Route::livewire('/products/create', 'pages::admin.product.product-create-component')
+     ->name('products.create');
+     Route::livewire('/products/{product}/edit', 'pages::admin.product.product-edit-component')
+    ->name('products.edit');
 
     
 

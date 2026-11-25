@@ -9,7 +9,7 @@
        <a href="{{route('admin.categories.edit', $val['id'])}}" class="btn btn-warning btn-circle" wire:navigate>
             <i class="fa-solid fa-pen"></i>
       </a>
-       <button class="btn btn-danger btn-circle" 
+       <button class="btn btn-danger btn-circle" wire:loading.attr="disabled" x-on:click="window.scrollTo({ top: 0, behavior: 'smooth' })"
        wire:confirm="Are you sure ?" wire:click="deleteCategory({{$val['id']}})">
           <i class="fa-solid fa-trash-can"></i>
       </button>

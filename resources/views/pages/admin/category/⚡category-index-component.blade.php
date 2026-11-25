@@ -5,6 +5,8 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\Layout;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+
 
 
 
@@ -33,6 +35,9 @@ class extends Component
             return;
         }
 
+        DB::table('category_filters')->where('category_id', '=', $category->id)
+        ->delete();
+
         $category->delete();
         cache()->forget('categories_data');
         session()->flash('success', 'Category removed');
@@ -46,7 +51,14 @@ class extends Component
 ?>
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 mb-4 position-relative">
+
+          <div class="update-loading" wire:loading>
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+          </div>
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <a href="{{ route('admin.categories.create')}}" class="btn btn-primary" wire:navigate>Add Category</a>
