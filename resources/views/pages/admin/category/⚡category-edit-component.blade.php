@@ -4,6 +4,9 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
+use App\Models\FilterGroup;
+use Illuminate\Support\Facades\Log;
 
 new 
 #[Layout('layouts::admin')] 
@@ -14,6 +17,8 @@ class extends Component
     public string $title;
     public $parent_id = 0;
     public $id;
+    public array $selectedFilterGroup = [];
+
    
 
     public function mount(Category $category)
@@ -22,6 +27,9 @@ class extends Component
         $this->title = $category->title;
         $this->parent_id = $category->parent_id;
         $this->id = $category->id;
+        $this->selectedFilterGroup = DB::table('category_filters')
+        ->where('category_id', '=', $this->id)
+        ->pluck('filter_group_id')->toArray();
     }
 
     public function save()
@@ -29,16 +37,49 @@ class extends Component
 
         $validated = $this->validate([
             'title' => 'required|max:255',
-            'parent_id' => 'required|integer'
+            'parent_id' => 'required|integer',
+            'selectedFilterGroup.*' => 'numeric',
+
         ]);
 
+        try {
 
-        $this->category->update($validated);
-        cache()->forget('categories_data');
-        session()->flash('success', 'Category updated successfully!');
-        $this->redirectRoute('admin.categories.index', navigate:true);
-       
+              DB::beginTransaction();
+              $this->category->update($validated);
 
+              DB::table('category_filters')
+              ->where('category_id', '=', $this->id)->delete();
+            
+              if(!empty($validated['selectedFilterGroup'])){
+                $data = [];
+                foreach ($validated['selectedFilterGroup'] as $filter_group_id) {
+                    $data[] = [
+                        'category_id' => $this->id,
+                        'filter_group_id' => $filter_group_id
+                        ];
+                }
+
+                DB::table('category_filters')->insert($data);
+                
+                }
+             DB::commit();
+             cache()->forget('categories_data');
+             session()->flash('success', 'Category updated successfully!');
+            $this->redirectRoute('admin.categories.index', navigate:true);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e->getMessage());
+            $this->js("toastr.error('Error! Category is not updating')");
+        }
+
+
+    }
+
+      public function render()
+    {
+        $filter_groups = FilterGroup::all();
+        return $this->view(compact('filter_groups'));
     }
     
 };
@@ -54,7 +95,7 @@ class extends Component
                     <form wire:submit="save">
 
                         <div class="mb-3">
-                            <label for="title" class="form-label required">{{ $title}}</label>
+                            <label for="title" class="form-label required">Title</label>
                             <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Category title"
                                     wire:model="title">
                             @error('title')
@@ -65,7 +106,7 @@ class extends Component
                         </div>
 
                         <div class="mb-3">
-                            <label for="title" class="form-label required">Categories List</label>
+                            <label for="title" class="form-label required">Parent Category</label>
 
                             <select wire:model="parent_id" id="parent_id"
                                 class="custom-select @error('parent_id') is-invalid @enderror">
@@ -77,6 +118,35 @@ class extends Component
                                 {{ $message }}
                             </div>
                             @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="card">
+                                <div class="card-header">Filters</div>
+                                <div class="card-body">
+                                    {{-- @error('selectedFilterGroup')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror --}}
+                                    @foreach ($filter_groups as $filter_group)
+                                        <div class="form-check" wire:key="{{$filter_group->id}}">
+                                              <input class="form-check-input" type="checkbox"  wire:model="selectedFilterGroup"
+                                              value="{{$filter_group->id}}" id="filter_group-{{$filter_group->id}}">
+                                            <label class="form-check-label" for="filter_group-{{$filter_group->id}}">
+                                                {{$filter_group->title}}
+                                            </label>
+                                        </div>
+
+                                    @endforeach
+                                    @error('selectedFilterGroup.*')
+                                        <div class="text-danger">
+                                            {{ $message }}
+                                        </div>
+                                     @enderror
+                                   
+                                </div>
+                            </div>
+                           
+                            
                         </div>
                              
                         <div class="mb-3">
