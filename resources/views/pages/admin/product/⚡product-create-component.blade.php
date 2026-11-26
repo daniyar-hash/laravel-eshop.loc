@@ -3,28 +3,67 @@
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\Category;
-use Illuminate\Support\Facades\DB;
-use App\Models\FilterGroup;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Validate;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\DB;
+
+
+
+
 new 
 #[Layout('layouts::admin')] 
-#[Title('Create Category')]
+#[Title('Create Product')]
 
 class extends Component
 {
+
+     use WithFileUploads;
     
     public string $title = '';
-    public int $category_id;
+    public $category_id;
     public string $excerpt;
     public string $content = '';
+    public array $selectedFilters = [];
+
+     #[Validate('image|max:1024')]
     public $image;
+     #[Validate('image|max:1024')]
     public $gallery;
     public int $price = 0;
     public int $old_price = 0;
     public bool $is_hit = false;
     public bool $is_new = false;
 
+    #[Computed]
+    public function filters()
+    {
+        $filter_groups = [];
+
+        if($this->category_id){
+            $ids = App\Helpers\Category\Category::getIds($this->category_id) . $this->category_id;
+            $category_filters = DB::table('category_filters')
+            ->select('category_filters.filter_group_id', 'filter_groups.title', 'filters.title as filter_title', 'filters.id as filter_id' )
+            ->join('filter_groups', 'category_filters.filter_group_id', '=', 'filter_groups.id')
+            ->join('filters', 'filters.filter_group_id', '=', 'filter_groups.id')
+            ->whereIn('category_filters.category_id', explode(',', $ids))
+            ->get();
+           
+            foreach ($category_filters as $filter) {
+                $filter_groups[$filter->filter_group_id][] = $filter;
+            }
+
+           
+           
+        }
+
+// echo '<pre>';
+// print_r($filter_groups);
+// echo '</pre>';
+        return $filter_groups;
+
+    }
 
 
 
@@ -33,7 +72,7 @@ class extends Component
 
 
 <div class="row">
-    <div class="col-12 position-relative">
+    <div class="col-12 mb-4 position-relative">
         
           <div class="update-loading" wire:loading wire:target="save">
                 <div class="spinner-border" role="status">
@@ -63,11 +102,13 @@ class extends Component
                         <div class="mb-3">
                             <label for="category_id" class="form-label required">Category</label>
 
-                            <select wire:model="category_id" id="category_id"
+                            <select wire:model.live="category_id" id="category_id"
                                 class="custom-select @error('category_id') is-invalid @enderror">
                                 <option value="">Select Category</option>
                                     {!!  App\Helpers\Category\Category::getMenu('incs.menu-select-tpl') !!}
                             </select>
+
+
                             @error('category_id')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -75,10 +116,34 @@ class extends Component
                             @enderror
                         </div>
 
+                         <div class="row">
+                                @foreach($this->filters as $key => $filter_group)
+                                <div class="col-lg-3 col-md-6" wire:key="{{$key}}">
+                                    <div class="card">
+                                        <div class="card-header py-3">
+                                            <h6 class="text-primary font-weight-bold m-0">{{$filter_group[0]->title}}</h6>
+                                        </div>
+                                         <div class="card-body">
+                                            @foreach($filter_group as $filter)
+                                                <div wire:key="{{$filter->filter_id}}">
+                                                    <input type="checkbox" wire:model="selectedFilters" 
+                                                     value="{{$filter->filter_id}}" id="filters-{{$filter->filter_id}}">
+                                                    <label class="form-check-label" for="filters-{{$filter->filter_id}}">
+                                                    {{$filter->filter_title}}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                         </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                               
+                            </div>
+
                         <div class="mb-3">
                             <label for="excerpt" class="form-label">Product excerpt</label>
                             <input type="excerpt" class="form-control @error('excerpt') is-invalid @enderror"
-                             id="title" wire:model="excerpt">
+                             id="excerpt" wire:model="excerpt">
                             @error('excerpt')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -87,9 +152,9 @@ class extends Component
                         </div>
 
                         <div class="mb-3">
-                            <label for="content" class="form-label required">Product content</label>
+                            <label for="product_content" class="form-label required">Product content</label>
                              <textarea class="form-control @error('content') is-invalid @enderror"
-                               id="content" wire:model="content">
+                               id="product_content" wire:model="content">
                              </textarea>
                          
                             @error('content')
