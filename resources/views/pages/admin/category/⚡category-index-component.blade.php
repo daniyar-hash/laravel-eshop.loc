@@ -53,7 +53,7 @@ class extends Component
 <div class="row">
     <div class="col-12 mb-4 position-relative">
 
-          <div class="update-loading" wire:loading>
+          <div class="update-loading" wire:loading wire:target="deleteCategory">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
@@ -68,9 +68,9 @@ class extends Component
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <td>Id</td>
-                                <td>Category</td>
-                                <td>Actions</td>
+                                <th>Id</th>
+                                <th>Category</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -32,7 +32,7 @@ class extends Component
 <div class="row">
     <div class="col-12 mb-4 position-relative">
 
-         <div class="update-loading" wire:loading wire:target.except="deleteCategory">
+         <div class="update-loading" wire:loading wire:target.except="deleteProduct">
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
@@ -48,18 +48,18 @@ class extends Component
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <td>Id</td>
-                                <td>Image</td>
-                                <td>Title</td>
-                                <td>Category</td>
-                                <td>Actions</td>
+                                <th style="width:10%">Id</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                            @foreach($products as $product)
                            <tr wire:key="{{$product->id}}">
                             <td>{{$product->id}}</td>
-                            <td><img src="{{asset($product->getImage())}}" alt="Image" height="50px"></td>
+                            <td><img src="{{asset($product->getImage())}}" alt="Image" height="50"></td>
                             <td>{{$product->title}}</td>
                             <td>{{$product->category->title}}</td>
                             <td>
@@ -70,7 +70,7 @@ class extends Component
                                         <i class="fa-solid fa-pen"></i>
                                 </a>
                                 <button class="btn btn-danger btn-circle" wire:loading.attr="disabled" x-on:click="window.scrollTo({ top: 0, behavior: 'smooth' })"
-                                wire:confirm="Are you sure ?" wire:click="deleteCategory({{$product->id}})">
+                                wire:confirm="Are you sure ?" wire:click="deleteProduct({{$product->id}})">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </td>
