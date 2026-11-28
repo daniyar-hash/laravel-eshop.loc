@@ -10,8 +10,6 @@ use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\DB;
 
 
-
-
 new 
 #[Layout('layouts::admin')] 
 #[Title('Create Product')]
@@ -27,14 +25,22 @@ class extends Component
     public string $content = '';
     public array $selectedFilters = [];
 
-     #[Validate('image|max:1024')]
+     #[Validate]
     public $image;
-     #[Validate('image|max:1024')]
+     #[Validate]
     public $gallery;
+
     public int $price = 0;
     public int $old_price = 0;
     public bool $is_hit = false;
     public bool $is_new = false;
+
+
+    public function updatedCategoryId()
+    {
+        $this->selectedFilters = [];
+    }
+
 
     #[Computed]
     public function filters()
@@ -58,11 +64,35 @@ class extends Component
            
         }
 
-// echo '<pre>';
-// print_r($filter_groups);
-// echo '</pre>';
+
         return $filter_groups;
 
+    }
+
+    public function save()
+    {
+
+
+        $validated = $this->validate();
+                dump($validated);
+    }
+
+
+    protected function rules()
+    {
+        return [
+            'title' => 'required|max:255',
+            'category_id' => 'required|integer|exists:categories,id',
+            'selectedFilters.*' => 'numeric',
+            'excerpt' => 'nullable|max:255',
+            'content' => 'required', 
+            'price' => 'required|integer',
+            'old_price' => 'integer',
+            'is_hit' => 'boolean',
+            'is_new' => 'boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ];
     }
 
 
@@ -141,7 +171,7 @@ class extends Component
                             </div>
 
                         <div class="mb-3">
-                            <label for="excerpt" class="form-label">Product excerpt</label>
+                            <label for="excerpt" class="form-label">Excerpt</label>
                             <input type="excerpt" class="form-control @error('excerpt') is-invalid @enderror"
                              id="excerpt" wire:model="excerpt">
                             @error('excerpt')
@@ -152,7 +182,7 @@ class extends Component
                         </div>
 
                         <div class="mb-3">
-                            <label for="product_content" class="form-label required">Product content</label>
+                            <label for="product_content" class="form-label required">Content</label>
                              <textarea class="form-control @error('content') is-invalid @enderror"
                                id="product_content" wire:model="content">
                              </textarea>
@@ -174,7 +204,7 @@ class extends Component
                             @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="old_price" class="form-label required">Old price</label>
+                            <label for="old_price" class="form-label">Old price</label>
                             <input type="number" class="form-control @error('price') is-invalid @enderror"
                              id="old_price" wire:model="old_price">
                             @error('old_price')
@@ -205,6 +235,30 @@ class extends Component
                                 {{ $message }}
                             </div>
                             @enderror
+                        </div>
+
+
+                         <div class="mb-3 form-check">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-input @error('image') is-invalid @enderror"
+                             id="image" wire:model="image">
+                             
+                            <div wire:loading wire:target="image">
+                               <span class="text-success">Uploading...</span>
+                            </div>
+                            @error('image')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+
+                            @if(!$errors->has('image') && $image && $image->isPreviewable())
+                            <p class="text-danger">Click me for delete</p>
+                            <img src="{{ $image->temporaryUrl()}}" alt="" width="100"
+                            wire:click="removeUpload('image', '{{$image->getFilename()}}')"
+                            >
+                            @endif
+
                         </div>
  
                         <div class="mb-3">
